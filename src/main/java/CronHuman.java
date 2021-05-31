@@ -1,9 +1,9 @@
 /**
- * Создаю класс который будет выводить на читаеммом человеку языке cron-выражение
+ * Создаю класс который будет выводить на читаеммом человеку языке cron-выражение;
  */
 public class CronHuman {
     /**
-     * Создаю 5 переменных типа String для их дальнейшей инициализации
+     * Создаю 5 переменных типа String для их дальнейшей инициализации;
      */
     String minutesHuman;
     String hoursHuman;
@@ -12,7 +12,7 @@ public class CronHuman {
     String weekHuman;
 
     /**
-     * Переопределение метода toString()
+     * Переопределение метода toString();
      */
     @Override
     public String toString() {
@@ -22,7 +22,7 @@ public class CronHuman {
 
 
     /**
-     * Сеттеры
+     * Сеттеры;
      */
     public void setMinutesHuman(String minutesHuman) {
         this.minutesHuman = minutesHuman;

@@ -1,78 +1,70 @@
 /**
- * Создаю класс в котором будет проиводится редактирование cron-выражения в читаемый для человека язык
+ * Создаю класс в котором будет проиводится редактирование cron-выражения в читаемый для человека язык;
  */
-public class CronReader extends CronHuman {
+public class CronReader {
 
     /**
      * Метод cronReaderMinutes() будет редактировать minutes класса Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Cron
+     * в параметре принимает объект класса Cron;
      */
-    public void cronReaderMinutes(Cron code) {
+    private String cronReaderMinutes(Cron code) {
         if (code.getMinutes().equals("*")) {
-            this.minutesHuman = "Каждую минуту, ";
-        } else this.minutesHuman = "В " + code.getMinutes() + " минуту, ";
+            return "Каждую минуту, ";
+        } else return "В " + code.getMinutes() + " минуту, ";
     }
 
     /**
      * Метод cronReaderHours() будет редактировать hours класса Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Cron
+     * в параметре принимает объект класса Cron;
      */
-    public void cronReaderHours(Cron code) {
+    private String cronReaderHours(Cron code) {
         if (code.getHours().equals("*")) {
-            this.hoursHuman = "каждый час, ";
-        } else this.hoursHuman = "в " + code.getHours() + " час, ";
+            return "каждый час, ";
+        } else return "в " + code.getHours() + " час, ";
     }
 
     /**
      * Метод cronReaderDayMonth() будет редактировать dayMonth класса Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Cron
+     * в параметре принимает объект класса Cron;
      */
-    public void cronReaderDayMonth(Cron code) {
+    private String cronReaderDayMonth(Cron code) {
         if (code.getDayMonth().equals("*")) {
-            this.dayMonthHuman = "каждый день месяца, ";
-        } else this.dayMonthHuman = "в " + code.getDayMonth() + " день месяца, ";
+            return "каждый день месяца, ";
+        } else return "в " + code.getDayMonth() + " день месяца, ";
     }
 
     /**
      * Метод cronReaderMonth() будет редактировать month класса Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Cron
+     * в параметре принимает объект класса Cron;
      */
-    public void cronReaderMonth(Cron code) {
+    private String cronReaderMonth(Cron code) {
         if (code.getMonth().equals("*")) {
-            this.monthHuman = "каждый месяц, ";
-        } else this.monthHuman = "в " + code.getMonth() + " месяц, ";
+            return  "каждый месяц, ";
+        } else return "в " + code.getMonth() + " месяц, ";
     }
 
     /**
      * Метод cronReaderWeek() будет редактировать week класса Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Cron
+     * в параметре принимает объект класса Cron;
      */
-    public void cronReaderWeek(Cron code) {
+    private String cronReaderWeek(Cron code) {
         if (code.getWeek().equals("*")) {
-            this.weekHuman = "Каждый день недели, ";
-        } else this.weekHuman = "в " + code.getWeek() + " день недели, ";
+            return "Каждый день недели, ";
+        } return "в " + code.getWeek() + " день недели, ";
     }
 
     /**
-     * Гетеры
+     *Метод создаст обект CronHuman, инициализирует его поля и сразу вернет toString() обекта CronHuman c уже инициализированными полями;
+     * а в качестве параметра метод примет объект Cron;
      */
-    public String getMinutesHuman() {
-        return minutesHuman;
+    public String translate(Cron cron){
+        CronHuman cronHuman = new CronHuman();
+        cronHuman.setMinutesHuman(cronReaderMinutes(cron));
+        cronHuman.setHoursHuman(cronReaderHours(cron));
+        cronHuman.setDayMonthHuman(cronReaderDayMonth(cron));
+        cronHuman.setMonthHuman(cronReaderMonth(cron));
+        cronHuman.setWeekHuman(cronReaderWeek(cron));
+        return cronHuman.toString();
     }
 
-    public String getHoursHuman() {
-        return hoursHuman;
-    }
-
-    public String getDayMonthHuman() {
-        return dayMonthHuman;
-    }
-
-    public String getMonthHuman() {
-        return monthHuman;
-    }
-
-    public String getWeekHuman() {
-        return weekHuman;
-    }
 }

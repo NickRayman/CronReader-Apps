@@ -2,12 +2,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
- * Создаю класс в котором будет проиводится ввод крон выражения
+ * Создаю класс в котором будет проиводится ввод крон выражения;
  */
 public class Cron {
 
     /**
-     * Создаю 5 переменных типа String для их дальнейшей инициализации
+     * Создаю 5 переменных типа String для их дальнейшей инициализации;
      */
     private String minutes = "0";
     private String hours = "0";
@@ -15,17 +15,17 @@ public class Cron {
     private String month = "0";
     private String week = "0";
     /**
-     * BufferedReader reader, который будет читать ввод с консоли
+     * BufferedReader reader, который будет читать ввод с консоли;
      */
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     /**
-     * Переменная str типа String для присваивания объекта переменной reader
+     * Переменная str типа String для присваивания объекта переменной reader;
      */
     private String str;
 
     /**
-     * Метод addCronMinutes() будет инициализировать поле second нашего объекта класса Cron
+     * Метод addCronMinutes() будет инициализировать поле second нашего объекта класса Cron;
      */
     public void addCronMinutes(String word) throws Exception {
         /*System.out.println("Введите минуты(* или любое число от 0 до 59): ");*/
@@ -45,7 +45,7 @@ public class Cron {
     }
 
     /**
-     * Метод addCronHours() будет инициализировать поле hours нашего объекта класса Cron
+     * Метод addCronHours() будет инициализировать поле hours нашего объекта класса Cron;
      */
     public void addCronHours(String word) throws Exception {
         /*System.out.println("Введите часы(* или любое число от 1 до 23): ");*/
@@ -65,7 +65,7 @@ public class Cron {
     }
 
     /**
-     * Метод addCronDayMonth() будет инициализировать поле dayMonth нашего объекта класса Cron
+     * Метод addCronDayMonth() будет инициализировать поле dayMonth нашего объекта класса Cron;
      */
     public void addCronDayMonth(String word) throws Exception {
         /*System.out.println("Введите день месяца(* или любое число от 1 до 31): ");*/
@@ -85,7 +85,7 @@ public class Cron {
     }
 
     /**
-     * Метод addCronMonth() будет инициализировать поле month нашего объекта класса Cron
+     * Метод addCronMonth() будет инициализировать поле month нашего объекта класса Cron;
      */
     public void addCronMonth(String word) throws Exception {
         /*System.out.println("Введите месяц(* или любое число от 1 до 12): ");*/
