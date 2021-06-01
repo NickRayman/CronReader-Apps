@@ -8,35 +8,36 @@ import java.util.regex.Pattern;
 
 public class SimpleGUI extends JFrame {
     protected JButton button = new JButton("Расшифровать");
-    protected JTextField input1 = new JTextField("", 5);
-    protected JTextField input2 = new JTextField("", 5);
-    protected JTextField input3 = new JTextField("", 5);
-    protected JTextField input4 = new JTextField("", 5);
-    protected JTextField input5 = new JTextField("", 5);
+    protected JTextField input1 = new JTextField("",3);
+    protected JTextField input2 = new JTextField("",3);
+    protected JTextField input3 = new JTextField("",3);
+    protected JTextField input4 = new JTextField("",3);
+    protected JTextField input5 = new JTextField("",3);
     protected JLabel label = new JLabel("Input:");
     protected List<String> errors = new ArrayList<>();
+    protected JTextArea area = new JTextArea(5,40);
 
     public SimpleGUI() {
         super("CronReader");
-        this.setBounds(100, 100, 1000, 100);
+        this.setSize(450, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container container = this.getContentPane();
-        container.setLayout(new GridLayout(1, 2, 2, 2));
+        container.setLayout(new FlowLayout());
         container.add(label);
         container.add(input1);
         container.add(input2);
         container.add(input3);
         container.add(input4);
         container.add(input5);
-
-
         ButtonGroup group = new ButtonGroup();
         button.addActionListener(new ButtonEventListener());
         container.add(button);
+        area.setLineWrap(true);
+        container.add(new JScrollPane(area));
     }
     private String validateMinute(String value) {
-        Matcher matcher = Pattern.compile("[012]").matcher(value);
+        Matcher matcher = Pattern.compile("[0-59]").matcher(value);
         if (!matcher.find()){
             errors.add("Не правильно введены минуты; ");
             return null;
@@ -45,7 +46,7 @@ public class SimpleGUI extends JFrame {
     }
 
     private String validateHours(String value) {
-        Matcher matcher = Pattern.compile("[012]").matcher(value);
+        Matcher matcher = Pattern.compile("[0-23]").matcher(value);
         if (!matcher.find()){
             errors.add("Не правильно введены часы; ");
             return null;
@@ -54,7 +55,7 @@ public class SimpleGUI extends JFrame {
     }
 
     private String validateDayMonth(String value) {
-        Matcher matcher = Pattern.compile("[012]").matcher(value);
+        Matcher matcher = Pattern.compile("[1-31]").matcher(value);
         if (!matcher.find()){
             errors.add("Не правильно введены дни месяца; ");
             return null;
@@ -63,7 +64,7 @@ public class SimpleGUI extends JFrame {
     }
 
     private String validateMonth(String value) {
-        Matcher matcher = Pattern.compile("[012]").matcher(value);
+        Matcher matcher = Pattern.compile("[1-12]").matcher(value);
         if (!matcher.find()){
             errors.add("Не правильно введен месяц; ");
             return null;
@@ -72,7 +73,7 @@ public class SimpleGUI extends JFrame {
     }
 
     private String validateWeek(String value) {
-        Matcher matcher = Pattern.compile("[012]").matcher(value);
+        Matcher matcher = Pattern.compile("[0-6]").matcher(value);
         if (!matcher.find()){
             errors.add("Не правильно введен день недели; ");
             return null;
@@ -99,14 +100,14 @@ public class SimpleGUI extends JFrame {
                 for(String value : errors){
                     errorsMassage = errorsMassage + value;
                 }
-                JOptionPane.showMessageDialog(null, errorsMassage, "Результат", JOptionPane.PLAIN_MESSAGE);
+                area.setText(errorsMassage);
                 errors.clear();
                 return;
             }
             CronReader cronReader = new CronReader();
             String str = cronReader.translate(cron);
 
-            JOptionPane.showMessageDialog(null, str, "Результат", JOptionPane.PLAIN_MESSAGE);
+            area.setText(str);
         }
     }
 

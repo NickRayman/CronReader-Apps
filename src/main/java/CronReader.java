@@ -49,8 +49,8 @@ public class CronReader {
      */
     private String cronReaderWeek(Cron code) {
         if (code.getWeek().equals("*")) {
-            return "Каждый день недели, ";
-        } return "в " + code.getWeek() + " день недели, ";
+            return "каждый день недели.";
+        } return "в " + code.getWeek() + " день недели.";
     }
 
     /**

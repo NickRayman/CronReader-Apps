@@ -5,5 +5,7 @@ public class Solution {
     public static void main(String[] args) throws Exception {
         SimpleGUI app = new SimpleGUI();
         app.setVisible(true);
+        app.setResizable(false);
+        app.setLocationRelativeTo(null);
     }
 }
