@@ -1,3 +1,5 @@
+package Client;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -18,7 +20,7 @@ public class SimpleGUI extends JFrame {
     protected JTextArea area = new JTextArea(5,40);
 
     public SimpleGUI() {
-        super("CronReader");
+        super("Client.CronReader");
         this.setSize(450, 250);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

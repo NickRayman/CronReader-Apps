@@ -1,3 +1,5 @@
+package Client;
+
 /**
  * Создаю класс который будет выводить на читаеммом человеку языке cron-выражение;
  */
@@ -5,11 +7,11 @@ public class CronHuman {
     /**
      * Создаю 5 переменных типа String для их дальнейшей инициализации;
      */
-    String minutesHuman;
-    String hoursHuman;
-    String dayMonthHuman;
-    String monthHuman;
-    String weekHuman;
+    protected String minutesHuman;
+    protected String hoursHuman;
+    protected String dayMonthHuman;
+    protected String monthHuman;
+    protected String weekHuman;
 
     /**
      * Переопределение метода toString();

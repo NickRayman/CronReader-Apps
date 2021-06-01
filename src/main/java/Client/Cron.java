@@ -1,3 +1,5 @@
+package Client;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -25,7 +27,7 @@ public class Cron {
     private String str;
 
     /**
-     * Метод addCronMinutes() будет инициализировать поле second нашего объекта класса Cron;
+     * Метод addCronMinutes() будет инициализировать поле second нашего объекта класса Client.Cron;
      */
     public void addCronMinutes(String word) throws Exception {
         /*System.out.println("Введите минуты(* или любое число от 0 до 59): ");*/
@@ -45,7 +47,7 @@ public class Cron {
     }
 
     /**
-     * Метод addCronHours() будет инициализировать поле hours нашего объекта класса Cron;
+     * Метод addCronHours() будет инициализировать поле hours нашего объекта класса Client.Cron;
      */
     public void addCronHours(String word) throws Exception {
         /*System.out.println("Введите часы(* или любое число от 1 до 23): ");*/
@@ -65,7 +67,7 @@ public class Cron {
     }
 
     /**
-     * Метод addCronDayMonth() будет инициализировать поле dayMonth нашего объекта класса Cron;
+     * Метод addCronDayMonth() будет инициализировать поле dayMonth нашего объекта класса Client.Cron;
      */
     public void addCronDayMonth(String word) throws Exception {
         /*System.out.println("Введите день месяца(* или любое число от 1 до 31): ");*/
@@ -85,7 +87,7 @@ public class Cron {
     }
 
     /**
-     * Метод addCronMonth() будет инициализировать поле month нашего объекта класса Cron;
+     * Метод addCronMonth() будет инициализировать поле month нашего объекта класса Client.Cron;
      */
     public void addCronMonth(String word) throws Exception {
         /*System.out.println("Введите месяц(* или любое число от 1 до 12): ");*/
@@ -105,7 +107,7 @@ public class Cron {
     }
 
     /**
-     * Метод addCronWeek() будет инициализировать поле week нашего объекта класса Cron
+     * Метод addCronWeek() будет инициализировать поле week нашего объекта класса Client.Cron
      */
     public void addCronWeek(String word) throws Exception {
         /*System.out.println("Введите день недели(* или любое число от 0 до 6): ");*/
