@@ -3,21 +3,18 @@ package Client;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.net.Socket;
 
 public class SimpleGUI extends JFrame {
     protected JButton button = new JButton("Расшифровать");
-    protected JTextField input1 = new JTextField("",3);
-    protected JTextField input2 = new JTextField("",3);
-    protected JTextField input3 = new JTextField("",3);
-    protected JTextField input4 = new JTextField("",3);
-    protected JTextField input5 = new JTextField("",3);
+    protected JTextField input1 = new JTextField("", 3);
+    protected JTextField input2 = new JTextField("", 3);
+    protected JTextField input3 = new JTextField("", 3);
+    protected JTextField input4 = new JTextField("", 3);
+    protected JTextField input5 = new JTextField("", 3);
     protected JLabel label = new JLabel("Input:");
-    protected List<String> errors = new ArrayList<>();
-    protected JTextArea area = new JTextArea(5,40);
+    protected JTextArea area = new JTextArea(5, 40);
 
     public SimpleGUI() {
         super("Client.CronReader");
@@ -38,81 +35,51 @@ public class SimpleGUI extends JFrame {
         area.setLineWrap(true);
         container.add(new JScrollPane(area));
     }
-    private String validateMinute(String value) {
-        Matcher matcher = Pattern.compile("[0-59]").matcher(value);
-        if (!matcher.find()){
-            errors.add("Не правильно введены минуты; ");
-            return null;
-        }
-        return value;
-    }
 
-    private String validateHours(String value) {
-        Matcher matcher = Pattern.compile("[0-23]").matcher(value);
-        if (!matcher.find()){
-            errors.add("Не правильно введены часы; ");
-            return null;
-        }
-        return value;
-    }
-
-    private String validateDayMonth(String value) {
-        Matcher matcher = Pattern.compile("[1-31]").matcher(value);
-        if (!matcher.find()){
-            errors.add("Не правильно введены дни месяца; ");
-            return null;
-        }
-        return value;
-    }
-
-    private String validateMonth(String value) {
-        Matcher matcher = Pattern.compile("[1-12]").matcher(value);
-        if (!matcher.find()){
-            errors.add("Не правильно введен месяц; ");
-            return null;
-        }
-        return value;
-    }
-
-    private String validateWeek(String value) {
-        Matcher matcher = Pattern.compile("[0-6]").matcher(value);
-        if (!matcher.find()){
-            errors.add("Не правильно введен день недели; ");
-            return null;
-        }
-        return value;
-    }
 
     class ButtonEventListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Cron cron = new Cron();
+
             try {
-                cron.addCronMinutes(validateMinute(input1.getText()));
-                cron.addCronHours(validateHours(input2.getText()));
-                cron.addCronDayMonth(validateDayMonth(input3.getText()));
-                cron.addCronMonth(validateMonth(input4.getText()));
-                cron.addCronWeek(validateWeek(input5.getText()));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+                try {
 
-            if (!errors.isEmpty()){
-                String errorsMassage = "";
-                for(String value : errors){
-                    errorsMassage = errorsMassage + value;
+                    // адрес - локальный хост, порт - 4004, такой же как у сервера
+                    Client.clientSocket = new Socket("localhost", 4004); // этой строкой мы запрашиваем
+                    //  у сервера доступ на соединение
+                    // читать соообщения с сервера
+                    Client.in = new BufferedReader(new InputStreamReader(Client.clientSocket.getInputStream()));
+                    // писать туда же
+                    Client.out = new BufferedWriter(new OutputStreamWriter(Client.clientSocket.getOutputStream()));
+                    Client.out.write(input1.getText());
+                    Client.out.flush();
+
+                    Client.out.write(input2.getText());
+                    Client.out.flush();
+
+                    Client.out.write(input3.getText());
+                    Client.out.flush();
+
+                    Client.out.write(input4.getText());
+                    Client.out.flush();
+
+                    Client.out.write(input5.getText());
+                    Client.out.flush();
+
+                    String serverWord = Client.in.readLine(); // ждём, что скажет сервер
+                    area.setText(serverWord);
+
+                } finally {// в любом случае необходимо закрыть сокет и потоки
+                    System.out.println("Клиент был закрыт...");
+                    Client.clientSocket.close();
+                    Client.in.close();
+                    Client.out.close();
                 }
-                area.setText(errorsMassage);
-                errors.clear();
-                return;
+            } catch (IOException exception) {
+                System.out.println(exception);
             }
-            CronReader cronReader = new CronReader();
-            String str = cronReader.translate(cron);
-
-            area.setText(str);
         }
     }
-
 
 
 }
