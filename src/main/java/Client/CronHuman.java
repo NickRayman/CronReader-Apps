@@ -14,12 +14,28 @@ public class CronHuman {
     protected String weekHuman;
 
     /**
+     * Флаг, для проверки данных
+     */
+    private boolean error = false;
+
+    /**
+     * Поле ошибки
+     */
+    private String errors;
+    /**
      * Переопределение метода toString();
      */
     @Override
     public String toString() {
-
+        if(!this.error)
         return minutesHuman + hoursHuman + dayMonthHuman + monthHuman + weekHuman;
+        else
+            return errors;
+    }
+
+    public void errors(String errors){
+        this.error = true;
+        this.errors = errors;
     }
 
 

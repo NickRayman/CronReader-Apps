@@ -1,13 +1,15 @@
 package Client;
 
+import Common.Cron;
+
 /**
  * Создаю класс в котором будет проиводится редактирование cron-выражения в читаемый для человека язык;
  */
 public class CronReader {
 
     /**
-     * Метод cronReaderMinutes() будет редактировать minutes класса Client.Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Client.Cron;
+     * Метод cronReaderMinutes() будет редактировать minutes класса Common.Cron в читаемый для человека язык,
+     * в параметре принимает объект класса Common.Cron;
      */
     private String cronReaderMinutes(Cron code) {
         if (code.getMinutes().equals("*")) {
@@ -16,8 +18,8 @@ public class CronReader {
     }
 
     /**
-     * Метод cronReaderHours() будет редактировать hours класса Client.Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Client.Cron;
+     * Метод cronReaderHours() будет редактировать hours класса Common.Cron в читаемый для человека язык,
+     * в параметре принимает объект класса Common.Cron;
      */
     private String cronReaderHours(Cron code) {
         if (code.getHours().equals("*")) {
@@ -26,8 +28,8 @@ public class CronReader {
     }
 
     /**
-     * Метод cronReaderDayMonth() будет редактировать dayMonth класса Client.Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Client.Cron;
+     * Метод cronReaderDayMonth() будет редактировать dayMonth класса Common.Cron в читаемый для человека язык,
+     * в параметре принимает объект класса Common.Cron;
      */
     private String cronReaderDayMonth(Cron code) {
         if (code.getDayMonth().equals("*")) {
@@ -36,8 +38,8 @@ public class CronReader {
     }
 
     /**
-     * Метод cronReaderMonth() будет редактировать month класса Client.Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Client.Cron;
+     * Метод cronReaderMonth() будет редактировать month класса Common.Cron в читаемый для человека язык,
+     * в параметре принимает объект класса Common.Cron;
      */
     private String cronReaderMonth(Cron code) {
         if (code.getMonth().equals("*")) {
@@ -46,8 +48,8 @@ public class CronReader {
     }
 
     /**
-     * Метод cronReaderWeek() будет редактировать week класса Client.Cron в читаемый для человека язык,
-     * в параметре принимает объект класса Client.Cron;
+     * Метод cronReaderWeek() будет редактировать week класса Common.Cron в читаемый для человека язык,
+     * в параметре принимает объект класса Common.Cron;
      */
     private String cronReaderWeek(Cron code) {
         if (code.getWeek().equals("*")) {
@@ -57,16 +59,16 @@ public class CronReader {
 
     /**
      *Метод создаст обект Client.CronHuman, инициализирует его поля и сразу вернет toString() обекта Client.CronHuman c уже инициализированными полями;
-     * а в качестве параметра метод примет объект Client.Cron;
+     * а в качестве параметра метод примет объект Common.Cron;
      */
-    public String translate(Cron cron){
+    public CronHuman translate(Cron cron){
         CronHuman cronHuman = new CronHuman();
         cronHuman.setMinutesHuman(cronReaderMinutes(cron));
         cronHuman.setHoursHuman(cronReaderHours(cron));
         cronHuman.setDayMonthHuman(cronReaderDayMonth(cron));
         cronHuman.setMonthHuman(cronReaderMonth(cron));
         cronHuman.setWeekHuman(cronReaderWeek(cron));
-        return cronHuman.toString();
+        return cronHuman;
     }
 
 }

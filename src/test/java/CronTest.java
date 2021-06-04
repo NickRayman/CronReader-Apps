@@ -1,4 +1,4 @@
-import Client.Cron;
+import Common.Cron;
 import junit.framework.TestCase;
 import org.junit.Test;
 
