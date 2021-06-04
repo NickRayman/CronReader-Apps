@@ -17,7 +17,7 @@ public class TranslateServes {
             cronHuman = runWithText(clientSocket, cron);
         }
         catch (IOException | ClassNotFoundException e){
-            e.getStackTrace();
+            System.out.println("Объект не передался");
         }
         return cronHuman;
     }
@@ -31,10 +31,11 @@ public class TranslateServes {
             System.out.println("Клиент заработал");
 
             objectOutputStream.writeObject(cron);
-            System.out.println("Клиент заработал");
+            System.out.println("Клиент отправил объект");
             objectOutputStream.flush();
-            System.out.println("Клиент заработал");
+
             CronHuman cronFromServer = (CronHuman) objectInputStream.readObject();
+            System.out.println("Клиент получил объект");
             return cronFromServer;
 
             }

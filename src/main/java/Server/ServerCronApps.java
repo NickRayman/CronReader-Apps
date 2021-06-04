@@ -23,6 +23,7 @@ public class ServerCronApps {
             }
         }
         catch (IOException | ClassNotFoundException e){
+            System.out.println("Сервер не отправил сообщение");
             e.getStackTrace();
         }
     }
@@ -47,6 +48,7 @@ public class ServerCronApps {
                 CronHuman cronHuman = new CronHuman();
                 cronHuman.errors(errorsMassage);
                 objectOutputStream.writeObject(cronHuman);
+                System.out.println("Сервер отправил сообщение");
                 objectOutputStream.flush(); // выталкиваем все из буфера
                 errors.clear();
                 return;
@@ -55,6 +57,7 @@ public class ServerCronApps {
                  CronReader cronReader = new CronReader();
                  CronHuman cronHumanWithClient = cronReader.translate(cronFromClient);
                  objectOutputStream.writeObject(cronHumanWithClient);
+                 System.out.println("Сервер отправил сообщение");
                  objectOutputStream.flush();
 
              }

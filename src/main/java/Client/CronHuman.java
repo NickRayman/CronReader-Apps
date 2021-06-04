@@ -1,9 +1,11 @@
 package Client;
 
+import java.io.Serializable;
+
 /**
  * Создаю класс который будет выводить на читаеммом человеку языке cron-выражение;
  */
-public class CronHuman {
+public class CronHuman implements Serializable {
     /**
      * Создаю 5 переменных типа String для их дальнейшей инициализации;
      */
