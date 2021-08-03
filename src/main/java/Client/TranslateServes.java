@@ -5,7 +5,6 @@ import Common.Cron;
 import java.io.*;
 import java.net.Socket;
 
-
 public class TranslateServes {
     public CronHuman translateCroneMessage(Cron cron){
         CronHuman cronHuman = null;

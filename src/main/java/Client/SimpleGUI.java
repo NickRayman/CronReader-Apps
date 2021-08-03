@@ -4,6 +4,8 @@ import Common.Cron;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.*;
 
 
@@ -55,8 +57,9 @@ public class SimpleGUI extends JFrame {
             cron.addCronWeek(week.getText());
             CronHuman cronHuman;
             cronHuman = translateServes.translateCroneMessage(cron);
-            area.setText(cronHuman.toString());
-
+            Date date = new Date();
+            SimpleDateFormat formatForDateNow = new SimpleDateFormat("E yyyy.MM.dd 'и время' hh:mm:ss a zzz");
+            area.append(formatForDateNow.format(date) + ": прошел запрос БД;\n");
         }
     }
 

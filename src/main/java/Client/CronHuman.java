@@ -29,8 +29,9 @@ public class CronHuman implements Serializable {
      */
     @Override
     public String toString() {
-        if(!this.error)
-        return minutesHuman + hoursHuman + dayMonthHuman + monthHuman + weekHuman;
+        if(!this.error){
+            return minutesHuman + hoursHuman + dayMonthHuman + monthHuman + weekHuman;
+        }
         else
             return errors;
     }
@@ -62,5 +63,28 @@ public class CronHuman implements Serializable {
 
     public void setWeekHuman(String weekHuman) {
         this.weekHuman = weekHuman;
+    }
+
+    /**
+     * Геттеры
+     */
+    public String getMinutesHuman() {
+        return minutesHuman;
+    }
+
+    public String getHoursHuman() {
+        return hoursHuman;
+    }
+
+    public String getDayMonthHuman() {
+        return dayMonthHuman;
+    }
+
+    public String getMonthHuman() {
+        return monthHuman;
+    }
+
+    public String getWeekHuman() {
+        return weekHuman;
     }
 }
