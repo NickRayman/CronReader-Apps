@@ -1,7 +1,7 @@
 package Server;
 
-import Client.CronHuman;
-import Client.CronReader;
+import Client.TranslateServes;
+import Common.CronHuman;
 import Common.Cron;
 
 import java.io.*;
@@ -9,96 +9,63 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.sql.*;
 
 public class ServerCronApps {
-    /**
-     * Константные аргументы для подключение к БД
-     */
-    private static final String URL = "jdbc:mysql://localhost:3306/mysql?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "Asdf22030620";
+
+    public static final Logger logger = Logger.getLogger(ServerCronApps.class.getName());
 
     private static List<String> errors = new ArrayList<>();
-
 
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                runWithObject(clientSocket);
+                runWithCronFromClient(clientSocket);
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Сервер не отправил сообщение");
+            logger.log(Level.WARNING,"Сервер не отправил сообщение");
             e.getStackTrace();
         }
     }
 
-    public void runWithObject(Socket clientSocket) throws IOException, ClassNotFoundException {
+    /**
+     *Метод runWithCronFromClient(Socket clientSocket)
+     */
+    public void runWithCronFromClient(Socket clientSocket) throws IOException, ClassNotFoundException {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
              ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream())) {
-            System.out.println("Сервер, заработал");
+            logger.log(Level.INFO,"Сервер, заработал");
             Cron cronFromClient = (Cron) objectInputStream.readObject();
-            System.out.println("Получили объект");
+           logger.log(Level.INFO,"Получили объект");
 
-            /**
-             * Заполним список нулями, так как если элемент списка null, то пользователь ввел верное значение
-             */
-            errors = nullErrors(errors);
-
-            cronFromClient.addCronMinutes(validateMinute(cronFromClient.getMinutes()));
-            cronFromClient.addCronHours(validateHours(cronFromClient.getHours()));
-            cronFromClient.addCronDayMonth(validateDayMonth(cronFromClient.getDayMonth()));
-            cronFromClient.addCronMonth(validateMonth(cronFromClient.getMonth()));
-            cronFromClient.addCronWeek(validateWeek(cronFromClient.getWeek()));
+            cronFromClient = initializingCron(cronFromClient);
 
             try {
-                Driver driver = new com.mysql.cj.jdbc.Driver();
-                DriverManager.registerDriver(driver);
+
+                WorkingDatabase.driverСheck();
 
             } catch (SQLException e) {
-                System.out.println("Неудалось загрузить класс драйвера!");
+                logger.log(Level.INFO,"Неудалось загрузить класс драйвера!");
             }
 
-            try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            try (Connection connection = DriverManager.getConnection(WorkingDatabase.URL, WorkingDatabase.USERNAME, WorkingDatabase.PASSWORD);
                  Statement statement = connection.createStatement()) {
 
-                /**
-                 * Булевая переменная - флаг
-                 */
-                boolean notNull = false;
-
-                for (String value : errors){
-                    if (value != null){
-                        notNull = true;
-                        break;
-                    }
-                }
-
-                if (notNull) {
+                if (!errors.isEmpty()) {
                     String errorsMassage = "";
                     for (String value : errors) {
                         errorsMassage = errorsMassage + value;
                     }
                     CronHuman cronHuman = new CronHuman();
                     cronHuman.errors(errorsMassage);
-
-                    /**
-                     * Отправляем запрос на добавление результата в базу данных
-                     */
-                    statement.execute("INSERT INTO cronresult.cronresult " +
-                            "(minutes, hours, dayMonth, month, week) VALUES " +
-                            "('" +errors.get(0)+"'," +
-                            " '" +errors.get(1)+ "'," +
-                            " '" +errors.get(2)+ "'," +
-                            " '" +errors.get(3)+ "'," +
-                            " '" +errors.get(4)+ "');");
-
                     objectOutputStream.writeObject(cronHuman);
-                    System.out.println("Сервер отправил сообщение c ошибкой");
+                   logger.log(Level.INFO,"Сервер отправил сообщение c ошибкой");
                     objectOutputStream.flush(); // выталкиваем все из буфера
                     errors.clear();
                     return;
@@ -107,24 +74,15 @@ public class ServerCronApps {
                 CronReader cronReader = new CronReader();
                 CronHuman cronHumanWithClient = cronReader.translate(cronFromClient);
 
-                /**
-                 * Отправляем запрос на добавление результата в базу данных
-                 */
-                statement.execute("INSERT INTO cronresult.cronresult " +
-                        "(minutes, hours, dayMonth, month, week) VALUES " +
-                        "('" +cronHumanWithClient.getMinutesHuman()+"'," +
-                        " '" +cronHumanWithClient.getHoursHuman()+ "'," +
-                        " '" +cronHumanWithClient.getDayMonthHuman()+ "'," +
-                        " '" +cronHumanWithClient.getMonthHuman()+ "'," +
-                        " '" +cronHumanWithClient.getWeekHuman()+ "');");
+                WorkingDatabase.request(statement, cronFromClient,cronHumanWithClient);
 
                 objectOutputStream.writeObject(cronHumanWithClient);
-                System.out.println("Сервер отправил сообщение");
+                logger.log(Level.INFO,"Сервер отправил сообщение");
                 objectOutputStream.flush(); // выталкиваем все из буфера
 
 
             } catch (SQLException e) {
-                System.out.println("Не удалось подключиться к БД");
+                logger.log(Level.WARNING, "Не удалось подключиться к БД");
             }
 
         }
@@ -137,7 +95,7 @@ public class ServerCronApps {
     private static String validateMinute(String value) {
         Matcher matcher = Pattern.compile("^[0-9]$|^[1-5][0-9]$|^[*]$").matcher(value);
         if (!matcher.find()) {
-            errors.set(0,"Не правильно введены минуты");
+            errors.add("Не правильно введены минуты, ");
             return null;
         }
 
@@ -147,7 +105,7 @@ public class ServerCronApps {
     private static String validateHours(String value) {
         Matcher matcher = Pattern.compile("^[0-9]$|^[1-2][0-3]$|^[*]$").matcher(value);
         if (!matcher.find()) {
-            errors.set(1,"Не правильно введены часы");
+            errors.add("не правильно введены часы, ");
             return null;
         }
 
@@ -157,7 +115,7 @@ public class ServerCronApps {
     private static String validateDayMonth(String value) {
         Matcher matcher = Pattern.compile("^[1-9]$|^[1-3][0-1]$|^[*]$").matcher(value);
         if (!matcher.find()) {
-            errors.set(2,"Не правильно введены дни месяца");
+            errors.add("не правильно введены дни месяца, ");
             return null;
         }
 
@@ -167,7 +125,7 @@ public class ServerCronApps {
     private static String validateMonth(String value) {
         Matcher matcher = Pattern.compile("^[1-9]$|^[1][0-2]$|^[*]$").matcher(value);
         if (!matcher.find()) {
-            errors.set(3,"Не правильно введен месяц");
+            errors.add("не правильно введен месяц, ");
             return null;
         }
 
@@ -177,7 +135,7 @@ public class ServerCronApps {
     private static String validateWeek(String value) {
         Matcher matcher = Pattern.compile("^[0-6]$|^[*]$").matcher(value);
         if (!matcher.find()) {
-            errors.set(4,"Не правильно введен день недели");
+            errors.add("не правильно введен день недели.");
             return null;
         }
 
@@ -185,14 +143,14 @@ public class ServerCronApps {
     }
 
     /**
-     *Метод, который заполнит наш массив нулями
+     * Метод для инициализации объекта Cron, введенными значениями в полях
      */
-    private static List<String> nullErrors(List<String> errors){
-
-        for(int i = 0; i < 5; i++){
-
-            errors.add(null);
-        }
-        return errors;
+    private static Cron initializingCron(Cron cron){
+        cron.addCronMinutes(validateMinute(cron.getMinutes()));
+        cron.addCronHours(validateHours(cron.getHours()));
+        cron.addCronDayMonth(validateDayMonth(cron.getDayMonth()));
+        cron.addCronMonth(validateMonth(cron.getMonth()));
+        cron.addCronWeek(validateWeek(cron.getWeek()));
+        return cron;
     }
 }

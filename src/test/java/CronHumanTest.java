@@ -1,4 +1,4 @@
-import Client.CronHuman;
+import Common.CronHuman;
 import junit.framework.TestCase;
 import org.junit.Test;
 

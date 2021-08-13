@@ -79,4 +79,11 @@ public class Cron implements Serializable {
         return week;
     }
 
+    /**
+     * Переопределение метода toString();
+     */
+    @Override
+    public String toString() {
+        return minutes + " " + hours + " " + dayMonth + " " + month + " " + week + " ";
+    }
 }

@@ -1,7 +1,7 @@
 package Client;
 
 /**
- * Создаю класс в котором будет производится создания и возовы функций;
+ * Создаю класс в котором будет производится создания и вызовы функций;
  */
 public class ClientMain {
     public static void main(String[] args) throws Exception {

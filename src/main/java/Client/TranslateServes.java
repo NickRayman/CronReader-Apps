@@ -1,11 +1,15 @@
 package Client;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import Common.Cron;
+import Common.CronHuman;
 
 import java.io.*;
 import java.net.Socket;
 
 public class TranslateServes {
+    public static final Logger logger = Logger.getLogger(TranslateServes.class.getName());
     public CronHuman translateCroneMessage(Cron cron){
         CronHuman cronHuman = null;
 
@@ -16,25 +20,25 @@ public class TranslateServes {
             cronHuman = runWithText(clientSocket, cron);
         }
         catch (IOException | ClassNotFoundException e){
-            System.out.println("Объект не передался");
+            logger.log(Level.WARNING,"Объект не передался");
         }
         return cronHuman;
     }
 
     /**
-     *Метод отправляет на сервер объект Cron и получает объект CronHuman, потом возвращает его
+     *Метод runWithText(Socket clientSocket, Cron cron) отправляет на сервер объект Cron и получает объект CronHuman, потом возвращает его
      */
     public CronHuman runWithText(Socket clientSocket, Cron cron) throws IOException, ClassNotFoundException {
         try(ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream())) {
-            System.out.println("Клиент заработал");
+            logger.log(Level.INFO,"Клиент заработал");
 
             objectOutputStream.writeObject(cron);
-            System.out.println("Клиент отправил объект");
+            logger.log(Level.INFO,"Клиент отправил объект");
             objectOutputStream.flush();
 
             CronHuman cronFromServer = (CronHuman) objectInputStream.readObject();
-            System.out.println("Клиент получил объект");
+           logger.log(Level.INFO,"Клиент получил объект");
             return cronFromServer;
 
             }
