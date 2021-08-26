@@ -2,7 +2,7 @@ package Client;
 
 import Common.Cron;
 import Common.CronHuman;
-import Server.WorkingDatabase;
+import Common.ResponseCron;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -10,8 +10,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
 
-
+/**
+ * Создаю класс, который будет на основе билиотеки Swing создавать оконное приложение и отправлять запросы на сервер
+ */
 public class SimpleGUI extends JFrame {
+
+    /**
+     * Поля, элементы интерфейса
+     */
+
     private JButton button = new JButton("Расшифровать");
     private static JTextField minutes = new JTextField("", 3);
     private static JTextField hours = new JTextField("", 3);
@@ -21,6 +28,9 @@ public class SimpleGUI extends JFrame {
     private JLabel label = new JLabel("Input:");
     private JTextArea area = new JTextArea(5, 40);
 
+    /**
+     * Конструктор класс SimpleGUI
+     */
     public SimpleGUI() {
         super("Server.CronReader");
         this.setSize(450, 250);
@@ -38,25 +48,42 @@ public class SimpleGUI extends JFrame {
         container.add(button);
         area.setLineWrap(true);
         container.add(new JScrollPane(area));
+
     }
 
 
     class ButtonEventListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             TranslateServes translateServes = new TranslateServes();
             Cron cron = initializingCron();
-            CronHuman cronHuman = translateServes.translateCroneMessage(cron);
-            Date date = new Date();
-            SimpleDateFormat formatForDateNow = new SimpleDateFormat("E yyyy.MM.dd 'и время' hh:mm:ss a zzz");
-            area.append(formatForDateNow.format(date) + ": " + cron.toString() + " -> " + cronHuman.toString() + "\n");
+
+            ResponseCron cronHuman = translateServes.translateCroneMessage(cron);
+
+            if (cronHuman.getErrors().isEmpty()) {
+
+                Date date = new Date();
+                SimpleDateFormat formatForDateNow = new SimpleDateFormat("E yyyy.MM.dd 'и время' hh:mm:ss a zzz");
+                area.append(formatForDateNow.format(date) + ": " + cron.toString() + " -> " + cronHuman.getCronHuman().toString() + "\n");
+            } else {
+                String errorsMassage = "";
+                for (String value : cronHuman.getErrors()) {
+                    errorsMassage = errorsMassage + value;
+                }
+                cronHuman.getCronHuman().errors(errorsMassage);
+                Date date = new Date();
+                SimpleDateFormat formatForDateNow = new SimpleDateFormat("E yyyy.MM.dd 'и время' hh:mm:ss a zzz");
+                area.append(formatForDateNow.format(date) + ": " + cron.toString() + " -> " + cronHuman.getCronHuman().toString() + "\n");
+            }
+
         }
     }
 
     /**
      * Метод initializingCron() для инициализации объекта Cron, введенными значениями в полях
      */
-    private static Cron initializingCron(){
+    private static Cron initializingCron() {
         /**
          * Создаю обект Cron
          */
@@ -69,28 +96,5 @@ public class SimpleGUI extends JFrame {
         cron.addCronWeek(week.getText());
 
         return cron;
-    }
-
-    /**
-     * Геттеры
-     */
-    public JTextField getMinutes() {
-        return minutes;
-    }
-
-    public JTextField getHours() {
-        return hours;
-    }
-
-    public JTextField getDayMonth() {
-        return dayMonth;
-    }
-
-    public JTextField getMonth() {
-        return month;
-    }
-
-    public JTextField getWeek() {
-        return week;
     }
 }

@@ -10,7 +10,20 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Создаю класс, который будет проверять подключен ли драйвер и отправлять запросы на базу данных
+ */
 public class WorkingDatabase {
+
+    /**
+     * Конструктор класса WorkingDatabase
+     */
+    public WorkingDatabase() {
+
+        WorkingDatabase.driverСheck();
+
+    }
+
     /**
      * Константные аргументы для подключение к БД
      */
@@ -21,22 +34,34 @@ public class WorkingDatabase {
     /**
      * Метод driverСheck(), который выбрасывает исключение,если драйвер не загружен
      */
-    public static void driverСheck() throws SQLException{
-        Driver driver = new com.mysql.cj.jdbc.Driver();
-        DriverManager.registerDriver(driver);
+    public static void driverСheck() {
+
+        try {
+            Driver driver = new com.mysql.cj.jdbc.Driver();
+            DriverManager.registerDriver(driver);
+        } catch (SQLException e) {
+            /*logger.log(Level.INFO, "Неудалось загрузить класс драйвера!");*/
+        }
     }
 
     /**
      * Метод request(Statement statement) отправляем запрос на добавление результата в базу данных
      */
-    public static void request(Statement statement, Cron cron, CronHuman cronHumanWithClient) throws SQLException{
-        Date date = new Date();
-        SimpleDateFormat formatForDateNow = new SimpleDateFormat("E yyyy.MM.dd 'и время' hh:mm:ss a zzz");
-        statement.execute("INSERT INTO cronresult.cronresult " +
-                "(cron, cronHuman, data) VALUES " +
-                "('" +cron.toString()+"'," +
-                " '" +cronHumanWithClient.toString()+ "'," +
-                " '" +formatForDateNow.format(date)+ "');");
+    public void request(Cron cron, CronHuman cronHumanWithClient) {
+        try (Connection connection = DriverManager.getConnection(WorkingDatabase.URL, WorkingDatabase.USERNAME, WorkingDatabase.PASSWORD);
+             Statement statement = connection.createStatement()) {
+
+            Date date = new Date();
+            SimpleDateFormat formatForDateNow = new SimpleDateFormat("E yyyy.MM.dd 'и время' hh:mm:ss a zzz");
+            statement.execute("INSERT INTO cronresult.cronresult " +
+                    "(cron, cronHuman, data) VALUES " +
+                    "('" + cron.toString() + "'," +
+                    " '" + cronHumanWithClient.toString() + "'," +
+                    " '" + formatForDateNow.format(date) + "');");
+        } catch (SQLException e) {
+            /*logger.log(Level.WARNING, "Не удалось подключиться к БД");*/
+        }
+
     }
 
 }
