@@ -2,6 +2,7 @@ package Server;
 
 import Common.Cron;
 import Common.CronHuman;
+import org.apache.log4j.Logger;
 
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -14,6 +15,11 @@ import java.util.Date;
  * Создаю класс, который будет проверять подключен ли драйвер и отправлять запросы на базу данных
  */
 public class WorkingDatabase {
+
+    /**
+     * Поле логгер
+     */
+    final static Logger logger = Logger.getLogger(WorkingDatabase.class);
 
     /**
      * Конструктор класса WorkingDatabase
@@ -40,7 +46,7 @@ public class WorkingDatabase {
             Driver driver = new com.mysql.cj.jdbc.Driver();
             DriverManager.registerDriver(driver);
         } catch (SQLException e) {
-            /*logger.log(Level.INFO, "Неудалось загрузить класс драйвера!");*/
+            logger.error("Неудалось загрузить класс драйвера!");
         }
     }
 
@@ -53,13 +59,15 @@ public class WorkingDatabase {
 
             Date date = new Date();
             SimpleDateFormat formatForDateNow = new SimpleDateFormat("E yyyy.MM.dd 'и время' hh:mm:ss a zzz");
+            logger.info("Отправляется запрос в БД...");
             statement.execute("INSERT INTO cronresult.cronresult " +
                     "(cron, cronHuman, data) VALUES " +
                     "('" + cron.toString() + "'," +
                     " '" + cronHumanWithClient.toString() + "'," +
                     " '" + formatForDateNow.format(date) + "');");
+            logger.info("Запрос в БД отправлен");
         } catch (SQLException e) {
-            /*logger.log(Level.WARNING, "Не удалось подключиться к БД");*/
+            logger.error("Не удалось подключиться к БД");
         }
 
     }

@@ -13,7 +13,7 @@ public class ResponseCron implements Serializable {
      * Неинициализированные поля, переменные классов List<String>, CronHuman
      */
     private List<String> errors = new ArrayList<>();
-    private CronHuman cronHuman;
+    private CronHuman cronHuman = new CronHuman();
 
 
     /**

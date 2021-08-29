@@ -1,13 +1,13 @@
 package Client;
 
 import Common.Cron;
-import Common.CronHuman;
 import Common.ResponseCron;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.log4j.Logger;
 import javax.swing.*;
 
 /**
@@ -27,6 +27,11 @@ public class SimpleGUI extends JFrame {
     private static JTextField week = new JTextField("", 3);
     private JLabel label = new JLabel("Input:");
     private JTextArea area = new JTextArea(5, 40);
+
+    /**
+     * Поле логгер
+     */
+    final static Logger logger = Logger.getLogger(SimpleGUI.class);
 
     /**
      * Конструктор класс SimpleGUI
@@ -62,11 +67,13 @@ public class SimpleGUI extends JFrame {
             ResponseCron cronHuman = translateServes.translateCroneMessage(cron);
 
             if (cronHuman.getErrors().isEmpty()) {
+                logger.info("Сервер передал объект ResponseCron без ошибок");
 
                 Date date = new Date();
                 SimpleDateFormat formatForDateNow = new SimpleDateFormat("E yyyy.MM.dd 'и время' hh:mm:ss a zzz");
                 area.append(formatForDateNow.format(date) + ": " + cron.toString() + " -> " + cronHuman.getCronHuman().toString() + "\n");
             } else {
+                logger.info("Сервер передал объект ResponseCron с заполненным списком ошибок");
                 String errorsMassage = "";
                 for (String value : cronHuman.getErrors()) {
                     errorsMassage = errorsMassage + value;

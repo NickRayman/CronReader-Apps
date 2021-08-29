@@ -3,6 +3,7 @@ package Server;
 import Common.CronHuman;
 import Common.Cron;
 import Common.ResponseCron;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -12,6 +13,11 @@ import java.net.Socket;
  * Создаю класс сервера, который будет получать и отправлять информацию клиенту
  */
 public class ServerCronApps {
+
+    /**
+     * Поле логгер
+     */
+    final static Logger logger = Logger.getLogger(ServerCronApps.class);
 
     /**
      * Неинициализированные поля, переменные классов WorkingDatabase, CronReader, CronHuman, Cron
@@ -36,8 +42,6 @@ public class ServerCronApps {
         cronHumanWithClient1 = new CronHuman();
     }
 
-    /* public static final Logger logger = Logger.getLogger(ServerCronApps.class.getName());*/
-
 
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
@@ -47,8 +51,7 @@ public class ServerCronApps {
                 runWithCronFromClient(clientSocket);
             }
         } catch (IOException | ClassNotFoundException e) {
-            /*logger.log(Level.WARNING, "Сервер не отправил сообщение");*/
-            e.getStackTrace();
+            logger.error("Сервер не отправил сообщение");
         }
     }
 
@@ -58,19 +61,25 @@ public class ServerCronApps {
     public void runWithCronFromClient(Socket clientSocket) throws IOException, ClassNotFoundException {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
              ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream())) {
-            /*logger.log(Level.INFO, "Сервер, заработал");*/
+
+            logger.info("Сервер, заработал");
+
             cronFromClient = (Cron) objectInputStream.readObject();
-            /*logger.log(Level.INFO, "Получили объект");*/
+
+            logger.info("Сервер получили объект");
 
             validateCron.validate(cronFromClient);
 
             if (!validateCron.getErrors().isEmpty()) {
 
                 cronHumanWithClient.setErrors(validateCron.getErrors());
+
                 objectOutputStream.writeObject(cronHumanWithClient);
-                /*logger.log(Level.INFO, "Сервер отправил сообщение c ошибкой");*/
-                System.out.println("Сервер отправил сообщение c ошибкой");
+
+                logger.info("Сервер отправил объект ResponseCron с заполненным списком ошибок");
+
                 objectOutputStream.flush(); // выталкиваем все из буфера
+
                 validateCron.getErrors().clear();
                 return;
             }
@@ -84,9 +93,8 @@ public class ServerCronApps {
 
             objectOutputStream.writeObject(cronHumanWithClient);
 
-            System.out.println("Сервер отправил сообщение");
+            logger.info("Сервер отправил объект ResponseCron без ошибок");
 
-            /*logger.log(Level.INFO, "Сервер отправил сообщение");*/
             objectOutputStream.flush(); // выталкиваем все из буфера
         }
 
