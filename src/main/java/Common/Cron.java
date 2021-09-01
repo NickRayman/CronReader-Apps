@@ -8,6 +8,11 @@ import java.io.Serializable;
 public class Cron implements Serializable {
 
     /**
+     * Переменная index типа Integer для определения индекса и дальнейшего удаления записи под ним;
+     */
+    private Integer index = -2;
+
+    /**
      * Создаю 5 переменных типа String для их дальнейшей инициализации;
      */
     private String minutes = "0";
@@ -24,41 +29,45 @@ public class Cron implements Serializable {
     /**
      * Метод addCronMinutes() будет инициализировать поле second нашего объекта класса Common.Cron;
      */
-    public void addCronMinutes(String word){
+    public void addCronMinutes(String word) {
         this.minutes = word;
     }
 
     /**
      * Метод addCronHours() будет инициализировать поле hours нашего объекта класса Common.Cron;
      */
-    public void addCronHours(String word){
+    public void addCronHours(String word) {
         this.hours = word;
     }
 
     /**
      * Метод addCronDayMonth() будет инициализировать поле dayMonth нашего объекта класса Common.Cron;
      */
-    public void addCronDayMonth(String word){
+    public void addCronDayMonth(String word) {
         this.dayMonth = word;
     }
 
     /**
      * Метод addCronMonth() будет инициализировать поле month нашего объекта класса Common.Cron;
      */
-    public void addCronMonth(String word){
+    public void addCronMonth(String word) {
         this.month = word;
     }
 
     /**
      * Метод addCronWeek() будет инициализировать поле week нашего объекта класса Common.Cron
      */
-    public void addCronWeek(String word){
+    public void addCronWeek(String word) {
         this.week = word;
     }
 
     /**
      * Гетеры
      */
+    public Integer getIndex() {
+        return index;
+    }
+
     public String getMinutes() {
         return minutes;
     }
@@ -80,10 +89,19 @@ public class Cron implements Serializable {
     }
 
     /**
+     * Сеттеры
+     */
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
+    /**
      * Переопределение метода toString();
      */
     @Override
     public String toString() {
         return minutes + " " + hours + " " + dayMonth + " " + month + " " + week + " ";
     }
+
+
 }

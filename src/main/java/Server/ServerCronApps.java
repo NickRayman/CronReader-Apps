@@ -58,7 +58,7 @@ public class ServerCronApps {
     /**
      * Метод runWithCronFromClient(Socket clientSocket)
      */
-    public void runWithCronFromClient(Socket clientSocket) throws IOException, ClassNotFoundException {
+    public void runWithCronFromClient(Socket clientSocket) throws IOException, ClassNotFoundException, NullPointerException {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
              ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream())) {
 
@@ -67,35 +67,48 @@ public class ServerCronApps {
             cronFromClient = (Cron) objectInputStream.readObject();
 
             logger.info("Сервер получили объект");
+            if (cronFromClient.getIndex().equals(-2)) {
+                validateCron.validate(cronFromClient);
 
-            validateCron.validate(cronFromClient);
+                if (!validateCron.getErrors().isEmpty()) {
 
-            if (!validateCron.getErrors().isEmpty()) {
+                    cronHumanWithClient.setErrors(validateCron.getErrors());
 
-                cronHumanWithClient.setErrors(validateCron.getErrors());
+                    objectOutputStream.writeObject(cronHumanWithClient);
+
+                    logger.info("Сервер отправил объект ResponseCron с заполненным списком ошибок");
+
+                    objectOutputStream.flush(); // выталкиваем все из буфера
+
+                    validateCron.getErrors().clear();
+                    return;
+                }
+
+                cronHumanWithClient1 = cronReader.translate(cronFromClient);
+
+                workingDatabase.request(cronFromClient, cronHumanWithClient1);
+
+                cronHumanWithClient.setCronHuman(cronHumanWithClient1);
 
                 objectOutputStream.writeObject(cronHumanWithClient);
 
-                logger.info("Сервер отправил объект ResponseCron с заполненным списком ошибок");
+                logger.info("Сервер отправил объект ResponseCron без ошибок");
 
                 objectOutputStream.flush(); // выталкиваем все из буфера
+            } else if (cronFromClient.getIndex().equals(-1)) {
 
-                validateCron.getErrors().clear();
-                return;
+                cronHumanWithClient.setDBTable(workingDatabase.requestDBTable());
+                objectOutputStream.writeObject(cronHumanWithClient);
+                logger.info("Сервер отправил историю запросов БД");
+
+            } else {
+
+                workingDatabase.removeIndexBD(cronFromClient);
+                logger.info("Сервер удалил запрос из БД");
+
             }
 
 
-            cronHumanWithClient1 = cronReader.translate(cronFromClient);
-
-            workingDatabase.request(cronFromClient, cronHumanWithClient1);
-
-            cronHumanWithClient.setCronHuman(cronHumanWithClient1);
-
-            objectOutputStream.writeObject(cronHumanWithClient);
-
-            logger.info("Сервер отправил объект ResponseCron без ошибок");
-
-            objectOutputStream.flush(); // выталкиваем все из буфера
         }
 
     }

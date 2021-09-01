@@ -1,5 +1,6 @@
 package Common;
 
+import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class ResponseCron implements Serializable {
      */
     private List<String> errors = new ArrayList<>();
     private CronHuman cronHuman = new CronHuman();
+    private DefaultListModel<String> dbTable = new DefaultListModel<String>();
 
 
     /**
@@ -27,6 +29,10 @@ public class ResponseCron implements Serializable {
         return cronHuman;
     }
 
+    public DefaultListModel getDBTable() {
+        return dbTable;
+    }
+
     /**
      * Сеттеры
      */
@@ -36,5 +42,9 @@ public class ResponseCron implements Serializable {
 
     public void setCronHuman(CronHuman cronHuman) {
         this.cronHuman = cronHuman;
+    }
+
+    public void setDBTable(DefaultListModel dbTable) {
+        this.dbTable = dbTable;
     }
 }

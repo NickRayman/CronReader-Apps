@@ -26,7 +26,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="46cd77f1-22f7-4e94-9243-c15c4476543c">
-        <schema name="cronresult" object-types="table, view" />
+        <schema name="cronresult" object-types="table, view, function, column" />
       </connection>
     </loaded-nodes>
   </component>
